@@ -22,7 +22,7 @@ app.use("/user", userHandler)
 app.use("/product", productHandler)
 
 // ORDERS
-app.use("/order", orderHandler))
+app.use("/order", orderHandler)
 
 // SERVER
 async function main() {
