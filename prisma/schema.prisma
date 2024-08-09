@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email String @unique
+  passwordHash String
+  name String
+  orders Order[]
+  createdAt DateTime @default(dbgenerated("now()"))
+}
+
+model Product {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name String
+  price Int
+  description String
+  createdAt DateTime @default(dbgenerated("now()"))
+  orders ProductsOnOrders[]
+}
+
+model Order {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user User @relation(fields: [userID], references: [id])
+  userID String @db.Uuid
+  products ProductsOnOrders[]
+  createdAt DateTime @default(dbgenerated("now()"))
+}
+
+model ProductsOnOrders {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  product Product @relation(fields: [productID], references: [id])
+  productID String @db.Uuid
+  order Order @relation(fields: [orderID], references: [id])
+  orderID String @db.Uuid
+}
